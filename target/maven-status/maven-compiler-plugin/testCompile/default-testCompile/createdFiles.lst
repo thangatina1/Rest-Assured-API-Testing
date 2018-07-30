@@ -1,1 +1,3 @@
 weatherApi\ValidateWeatherApi.class
+stepDefinition\WeatherApiTest.class
+runners\WeatherApiTestRunner.class

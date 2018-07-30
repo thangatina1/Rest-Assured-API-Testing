@@ -2,15 +2,16 @@ package weatherApi;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.testng.Assert;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import extentReport.ExtentReportBase;
+
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
@@ -31,7 +32,7 @@ public class ValidateWeatherApi {
 
 				get("/data/2.5/weather?zip=94040,us&appid=651587654bcd0392c12915b211ad8efa").
 				then()
-				.body("cod", equalTo(200));
+				.statusCode(200);
 		
 	}
 
@@ -47,6 +48,35 @@ public class ValidateWeatherApi {
 		
 	}
 
+	// Passing Parameters to GET Request
+	@Test
+	public void validateTemperature() {
+		
+		int minTemp = given().
+		params("zip", "94040,us", "appid", "651587654bcd0392c12915b211ad8efa").
+		when().
+		get("/data/2.5/weather").
+		then().extract().
+        path("main.temp_min");
+		
+		int maxTemp = given().
+				params("zip", "94040,us", "appid", "651587654bcd0392c12915b211ad8efa").
+				when().
+				get("/data/2.5/weather").
+				then().extract().
+		        path("main.temp_max");
+		
+		int temp = given().
+				params("zip", "94040,us", "appid", "651587654bcd0392c12915b211ad8efa").
+				when().
+				get("/data/2.5/weather").
+				then().extract().
+		        path("main.temp");
+		
+		assertTrue(minTemp <= temp && temp <= maxTemp);
+		
+		
+	}
 	// PathParameter to read a JSON file
 	@Test
 	public void useSinglePathParameter() {
